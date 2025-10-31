@@ -1,6 +1,8 @@
 p/
 node1/
+node2/
 base/
 data/
 config.toml
 genesis.json
+config.tgz

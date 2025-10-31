@@ -16,6 +16,6 @@ elif [ ! -s /root/.cometbft/config/genesis.json ]; then
     cometbft show-node-id
     tailscaled &
     sleep 5
-    tailscale login --auth-key=$TS_AUTHKEY
+    tailscale login --auth-key=$TS_AUTHKEY --hostname=$NODE
     tailscale up
 fi
