@@ -1,0 +1,49 @@
+services:
+  cometbft-1:
+    image: vs
+    privileged: true
+    container_name: cometbft-1
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./node1/cometbft:/root/.cometbft
+      - ./node1/db:/root/zcash-vote-server/db
+      - ./node1/tailscale-data:/var/lib/tailscale
+      - ./node1/config:/root/config
+    environment:
+      - TS_AUTHKEY
+    stdin_open: true
+    tty: true
+
+  # cometbft-2:
+  #   image: zcv
+  #   privileged: true
+  #   container_name: cometbft-2
+  #   volumes:
+  #     - ./node2/cometbft:/root/.cometbft
+  #     - ./node2/db:/root/zcash-vote-server/db
+  #     - ./node2/tailscale-data:/var/lib/tailscale
+  #   stdin_open: true
+  #   tty: true
+
+  # cometbft-3:
+  #   image: zcv
+  #   privileged: true
+  #   container_name: cometbft-3
+  #   volumes:
+  #     - ./node3/cometbft:/root/.cometbft
+  #     - ./node3/db:/root/zcash-vote-server/db
+  #     - ./node3/tailscale-data:/var/lib/tailscale
+  #   stdin_open: true
+  #   tty: true
+
+  # cometbft-4:
+  #   image: zcv
+  #   privileged: true
+  #   container_name: cometbft-4
+  #   volumes:
+  #     - ./node4/cometbft:/root/.cometbft
+  #     - ./node4/db:/root/zcash-vote-server/db
+  #     - ./node4/tailscale-data:/var/lib/tailscale
+  #   stdin_open: true
+  #   tty: true
