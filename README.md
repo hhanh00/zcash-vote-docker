@@ -59,6 +59,7 @@ Gives this info to the coordinator.
 ### Validator
 - Overwrite the content of `node1` with the `root` directory from the coordinator
 - Remove `BOOT_VALIDATOR=1` from `vote-server.yml`
+- **Edit `config.toml` and remove your own node address from the `persistent_peers` list**
 - Run `docker-compose -f vote-server.yml up -d` (from top dir. Notice the **-d**)
 
 ### Test
