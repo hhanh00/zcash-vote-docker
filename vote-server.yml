@@ -7,26 +7,11 @@ services:
       - "8000:8000"
     volumes:
       - ./node1/cometbft:/root/.cometbft
+      - ./node1/data:/root/zcash-vote-server/data
       - ./node1/db:/root/zcash-vote-server/db
       - ./node1/tailscale-data:/var/lib/tailscale
-      - ./node1/config:/root/config
     environment:
       - TS_AUTHKEY
       - NODE=node1
     stdin_open: true
     tty: true
-
-  # cometbft-2:
-  #   image: vs
-  #   privileged: true
-  #   container_name: cometbft-2
-  #   volumes:
-  #     - ./node2/cometbft:/root/.cometbft
-  #     - ./node2/db:/root/zcash-vote-server/db
-  #     - ./node2/tailscale-data:/var/lib/tailscale
-  #     - ./node2/config:/root/config
-  #   environment:
-  #     - TS_AUTHKEY
-  #     - NODE=node2
-  #   stdin_open: true
-  #   tty: true
