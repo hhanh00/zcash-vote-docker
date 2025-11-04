@@ -1,18 +1,21 @@
 ## Build the image (both Coordinator and Validators)
+
 - Pick either `Dockerfile.amd64` or `Dockerfile.arm64` depending on the architecture
 - Build the image `docker build -f Dockerfile.arm64 -t vs .`
+- **Rebuild the image from the latest version of the Dockerfile to pick up the latest updates**
 - **set and export TS_AUTHKEY** with Tailscale auth token (provided by the Coordinator)
 
 ## Coordinator
 
 - Make a staging directory `node1`
 - Collect and prepare the election files
-    - Copy the election files into `node1/data`
+  - Copy the election files into `node1/data`
 - Add the env variable BOOT_COORDINATOR=1 to vote-server.yml
 - Run `docker-compose -f vote-server.yml up`
 
 It should exit quickly and print something like:
-```
+
+```text
 Attaching to cometbft-1
 cometbft-1  | I[2025-11-01|03:20:34.350] Generated private validator                  module=main keyFile=/root/.cometbft/config/priv_validator_key.json stateFile=/root/.cometbft/data/priv_validator_state.json
 cometbft-1  | I[2025-11-01|03:20:34.350] Generated node key                           module=main path=/root/.cometbft/config/node_key.json
@@ -28,10 +31,12 @@ cometbft-1 exited with code 0
 ## Validators
 
 ### Run 1
+
 - Add the env variable BOOT_VALIDATOR=1 to vote-server.yml
 - Make sure TS_AUTHKEY is set
 - Run `docker-compose -f vote-server.yml up`
-```
+
+```text
 ...
 cometbft-1  | 4d0ab1fb5ba109cd0ca827ae001fb1b060e8afaf
 cometbft-1  |     {
@@ -48,23 +53,48 @@ cometbft-1  |     }
 Gives this info to the coordinator.
 
 ## Coordinator
+
 - A new machine should be registered on tailscale
 - Edit `config.toml` / `persistent_peers` from the staging directory
-    - ex: 4d0ab1fb5ba109cd0ca827ae001fb1b060e8afaf@node1:26656
+  - ex: 4d0ab1fb5ba109cd0ca827ae001fb1b060e8afaf@node1:26656
 - Merge the validator entry into `genesis.json`
 - Repeat with the other nodes
 
 - Distribute the `root` directory to each participant (as a zip, tar, etc)
 
 ### Validator
+
 - Overwrite the content of `node1` with the `root` directory from the coordinator
 - Remove `BOOT_VALIDATOR=1` from `vote-server.yml`
 - **Edit `config.toml` and remove your own node address from the `persistent_peers` list**
 - Run `docker-compose -f vote-server.yml up -d` (from top dir. Notice the **-d**)
 
 ### Test
+
 - Connect to container `docker exec -it cometbft-1 /bin/bash`
 - Run `supervisorctl`
 - Check that every service is running
 - `tail -f cometbft`
 - Blocks should be producing
+
+## Troubleshooting
+
+- `docker-compose` doesn't exist.
+  - On more recent versions of docker, compose is a plugin. Try using `docker compose` (no hypen)
+  - It may not be installed with docker. Refer to your platform instructions for docker.
+- After running docker compose, the files it created are owned by root.
+  - On some platforms, files created in the container are owned by root in the host. You can either `chown` them later or add a user entry in the compose file.
+
+```yml
+services:
+  cometbft-1:
+    image: vs
+    user: joe
+```
+
+- The container does not login into tailscale automatically. It shows a login URL and I need to manually go the the website.
+  - Make sure you have defined and exported the `TS_AUTHKEY` environment variable with a tailscale key:
+    - the key must be *reusable*
+    - it must be exported in the shell: `export TS_AUTHKEY=...`
+    - if you added to the script, the script must be sourced
+    - the key is the *secret key*, and not the key id. The secret key is only shown once when created. It has ~60 characters.
