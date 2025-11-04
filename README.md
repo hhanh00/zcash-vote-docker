@@ -25,6 +25,7 @@ cometbft-1  | 2025-11-01T03:20:34.361149Z  INFO zcash_vote_server: # elections =
 cometbft-1 exited with code 0
 ```
 
+- **Edit the file `node1/cometbft/config/config.toml`, change the timeout to 60s: `timeout_broadcast_tx_commit = "60s"`**
 - Cleanup the config files by running `clean-config.sh`
 - The config files are in the directory `root` now
 
