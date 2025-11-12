@@ -28,6 +28,8 @@ cometbft-1 exited with code 0
 - **Edit the file `node1/cometbft/config/config.toml`, change the timeout to 60s: `timeout_broadcast_tx_commit = "60s"`**
 - Cleanup the config files by running `clean-config.sh`
 - The config files are in the directory `root` now
+- Remove the validator item in the `genesis.json` but
+leave the `validators` section (it should now be empty).
 
 ## Validators
 
